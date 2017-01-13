@@ -40,8 +40,16 @@ Build a city attraction recommender system based on web-scraping data; Test is w
 
 **Figure 4: Counts of top 200 popular venues of each tourist source groups**
 
-6. Comparison among different visitor sources were performed to refine the recommendation.  
-7. UI developemnt: Let user pick photos they are interested and homecity group, plot recommendation attractions on map. 
+6. Comparison among reivews from different visitor sources were performed to refine the recommendation: 
+  1) popular keywords were all translated to English,
+  2) For each venue, the keywords were formated into a vector with length equal to total counts of keywords in the entire dateset. 
+     If a keyword appears in a venue's document, the value was assigned to one; otherwise 0
+  3) Non-negative matrix factorization was applied on the aforementioned keywords vectors to group the venues to 5 different tops
+  4) Manually adjusted topics of the venues.
+ 
+7. A pesudo user-item evaluation score matrix was generated with each visitor's action on ecah venues's page (namely "likes", "photos posted", and "tips posted"), and use graphlab's factorization recommender model to make a list of recommended venes.
+8. Weighted the score predicted by the aforementioned model by the topics and homecity group, and return the top few venues. 
+9. UI developemnt: Let user pick photos they are interested and also their homecity group, plot recommendation attractions on map. 
 
 
 #### Limitations: 
@@ -56,5 +64,3 @@ Build a city attraction recommender system based on web-scraping data; Test is w
 - My recommender system product of this project will include only the top 200 venues of each visitor source group (sum up to 442 venues) as an toy example that can be deployed on a small amazon instance. The framework can be extended when more data available, and he business features and A/B testing evaluation can be added.
 
 - The NMF analysis indicates visitors to all the venues tend to mention some food, which also indicates that food is an important element that shared among all city attractions! Restaurant recommender is not the topic of this project, but I am expecting to see interesting patterns among different tourist sources in Tokyo.
-
-
