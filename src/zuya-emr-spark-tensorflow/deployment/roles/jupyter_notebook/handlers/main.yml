@@ -1,0 +1,4 @@
+---
+- name: Reload Jupyter supervisor
+  supervisorctl: name=jupyter state=restarted supervisorctl_path=/usr/local/bin/supervisorctl
+  become: true

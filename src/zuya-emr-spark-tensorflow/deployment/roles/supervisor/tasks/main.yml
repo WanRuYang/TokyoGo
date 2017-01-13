@@ -1,0 +1,22 @@
+---
+- name: Install supervisor
+  pip: name=supervisor state=present
+  become: true
+
+- name: Create supervisor include folder
+  file: path=/etc/supervisord/conf.d state=directory
+  become: true
+
+- name: Create supervisor log folder
+  file: path=/var/log/supervisord state=directory
+  become: true
+
+- name: Configure supervisor
+  template: src=supervisord.conf dest=/etc/supervisord.conf
+  become: true
+  notify: Reload supervisor
+
+- name: Install supervisor as service
+  template: src=init.d dest=/etc/init.d/supervisor mode=755
+  become: true
+  notify: Reload supervisor

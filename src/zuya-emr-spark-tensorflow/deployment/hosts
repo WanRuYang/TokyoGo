@@ -1,0 +1,20 @@
+[all:vars]
+region=us-west-2
+profile=zuyaaws
+emr_cluster_name=spark-tensorflow-2
+emr_s3_bucket_name=emr-spark-tensorflow-files
+emr_ec2_keyname=zuya_galvanize01
+emr_core_node_count=10
+emr_bootstrap_script_path="{{ playbook_dir }}/files/emr_spark_tensorflow/bootstrap.sh"
+
+[localhost]
+localhost ansible_python_interpreter=python
+
+[emr-spark-tensorflow]
+35.165.22.180
+
+[emr-spark-tensorflow:vars]
+ansible_connection=ssh
+ansible_user=hadoop
+ansible_private_key_file=~/.ssh/zuya_galvanize01.pem
+ansible_ssh_common_args="-o StrictHostKeyChecking=no"

@@ -1,0 +1,16 @@
+---
+- name: Install package dependencies
+  apt: name={{ item }} state=present update_cache=true
+  with_items:
+    - postgresql-libs
+    - postgresql-devel
+  become: true
+
+- name: Install python dependencies
+  pip: name={{ item }} state=present
+  with_items:
+    - pymongo
+    - psycopg2
+    - boto3
+  become: true
+

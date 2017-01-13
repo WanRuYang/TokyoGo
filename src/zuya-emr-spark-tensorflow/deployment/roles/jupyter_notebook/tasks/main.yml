@@ -1,0 +1,12 @@
+---
+- name: Install Jupyter
+  pip: name=jupyter state=present
+  become: true
+
+- name: Create Jupyter folder
+  file: path=/home/hadoop/jupyter state=directory
+
+- name: Configure supervisor
+  template: src=supervisord.conf dest=/etc/supervisord/conf.d/jupyter.conf
+  become: true
+  notify: Reload Jupyter supervisor

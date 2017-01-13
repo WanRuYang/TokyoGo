@@ -1,0 +1,62 @@
+---
+- name: Provision EMR dependencies
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+  tasks:
+    - name: Make sure S3 bucket is created
+      s3_bucket:
+        region: "{{ region }}"
+        profile: "{{ profile }}"
+        name: "{{ emr_s3_bucket_name }}"
+        state: present
+
+    - name: Put bootstrap script in place
+      s3:
+        profile: "{{ profile }}"
+        bucket: "{{ emr_s3_bucket_name }}"
+        object: /deployment/bootstrap.sh
+        src: "{{ emr_bootstrap_script_path }}"
+        mode: put
+
+  tags: provision
+
+- name: Launch EMR
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Run launch script
+      shell: "{{ playbook_dir }}/files/emr_spark_tensorflow/launch_cluster.sh {{ emr_cluster_name }} {{ region }} {{ emr_s3_bucket_name }} {{ emr_ec2_keyname }} {{ emr_core_node_count }} {{ emr_bootstrap_script_path }}"
+      environment:
+        AWS_PROFILE: "{{ profile }}"
+
+  tags: launch
+
+- name: Setup EMR master
+  hosts: emr-spark-tensorflow
+  pre_tasks:
+    - name: Link Spark dependencies
+      lineinfile:
+        dest: /home/hadoop/.bashrc
+        line: export SPARK_HOME=/usr/lib/spark
+        state: present
+
+    - name: Link Python-spark dependencies
+      lineinfile:
+        dest: /home/hadoop/.bashrc
+        line: export PYTHONPATH=$SPARK_HOME/python/lib/pyspark.zip:$SPARK_HOME/python/lib/py4j-src.zip:$PYTHONPATH
+        state: present
+
+    - name: Create app directories
+      file: path=/opt/blog_image state=directory owner={{ansible_user}} group={{ansible_user}}
+      become: yes
+
+    - name: Put app codes in place
+      synchronize: src=../blog_image/ dest=/opt/blog_image/
+
+  roles:
+    - jupyter_notebook
+
+  tags: setup
