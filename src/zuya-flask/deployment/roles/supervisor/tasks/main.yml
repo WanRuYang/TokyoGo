@@ -1,0 +1,5 @@
+---
+- name: Install Supervisor
+  apt: name=supervisor state=present update_cache=true
+  become: true
+  notify: Restart Supervisor

@@ -1,0 +1,67 @@
+---
+- name: Provision the EC2 instance
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    aws_profile: zuyaaws
+    instance_name: flask-new
+  tasks:
+    - name: Make sure the EC2 instance is created
+      register: instances
+      ec2:
+        profile: "{{ aws_profile }}"
+        region: us-west-2
+        key_name: zuya_galvanize01
+        instance_type: r3.xlarge
+        image: ami-a9d276c9
+        wait: true
+        instance_tags:
+          Name: "{{ instance_name }}"
+        exact_count: 1
+        count_tag:
+          Name: "{{ instance_name }}"
+        group: launch-wizard-2
+        volumes:
+          - device_name: /dev/sda1
+            delete_on_termination: false
+            volume_size: 100
+            volume_type: gp2
+        monitoring: no
+        vpc_subnet_id: subnet-7615762e
+        assign_public_ip: true
+
+    - name: Verify instance is ready for remote access
+      wait_for:
+        port: 22
+        host: "{{ item.public_ip }}"
+      with_items: "{{ instances.instances or instances.tagged_instances }}"
+
+    - name: Add hosts
+      add_host:
+        hostname: "{{instance_name}}"
+        groups: "{{instance_name}}"
+        ansible_host: "{{item.public_ip}}"
+        ansible_user: "ubuntu"
+        ansible_private_key_file: ~/.ssh/zuya_galvanize01.pem
+        # So it won't ask me for authenticity about the ssh connection
+        ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
+      with_items: "{{instances.instances or instances.tagged_instances}}"
+
+- name: Install Python dependency
+  hosts: flask-new
+  gather_facts: false
+  tasks:
+    - name: Update APT repo
+      raw: apt-get update -y
+      become: true
+
+    - name: Install Python
+      raw: apt-get install -y python
+      become: true
+
+- name: Install flask and its dependencies
+  hosts: flask-new
+  roles:
+    - tokyogo
+    - jupyter_notebook

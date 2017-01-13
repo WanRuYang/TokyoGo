@@ -1,0 +1,4 @@
+---
+- name: Reload app supervisor
+  supervisorctl: name=my_app state=restarted
+  become: true

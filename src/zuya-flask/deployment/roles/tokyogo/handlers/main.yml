@@ -1,0 +1,4 @@
+---
+- name: Reload app supervisor
+  supervisorctl: name=tokyogo state=restarted
+  become: true

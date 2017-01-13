@@ -1,0 +1,60 @@
+---
+- name: Install APT repositories
+  apt_repository: repo='ppa:ubuntugis/ppa' state=present
+  become: true
+
+- name: Install APT dependencies
+  apt: name={{ item }} state=present update_cache=true
+  with_items:
+    - python-pip
+    - gdal-bin
+  become: true
+
+- name: Install Python modules
+  pip: name={{ item }} state=present
+  with_items:
+    - flask
+    - numpy
+    - scipy
+    - sklearn
+    - pandas
+    - nltk
+    - boto3
+    - statsmodels
+    - osmapi
+  become: true
+
+- name: Download node.js v6.x installer
+  get_url:
+    url: https://deb.nodesource.com/setup_6.x
+    dest: /tmp/
+    mode: 0777
+  register: node_installer
+
+- name: Setup node.js package
+  command: "{{node_installer.dest}}"
+  when: node_installer.changed
+  become: yes
+
+- name: Install node.js
+  apt:
+    name: nodejs
+    state: present
+    update_cache: yes
+  when: node_installer.changed
+  become: yes
+
+- name: Make sure the app folder is created
+  file: path=/opt/tokyogo state=directory owner=ubuntu group=ubuntu mode=0755
+  become: true
+
+- name: Put app codes in place
+  synchronize: src=../../../../tokyogo dest=/opt/
+
+- name: Build app front-end dependencies
+  command: make run_build_app chdir=/opt/tokyogo/tokyogo-frontend
+
+- name: Configure supervisor script for app
+  template: src=supervisor.conf dest=/etc/supervisor/conf.d/tokyogo.conf
+  become: true
+  notify: Reload app supervisor
