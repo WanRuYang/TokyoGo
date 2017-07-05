@@ -59,7 +59,7 @@ Build a city attraction recommender system based on web-scraping data; Test is w
 
 
 #### Dicussion: 
-- The method applied was able to distinguish (to a certain extent) preferences of different groups (local, visitors from other areas in Japan, and forigner travelers).
+- The method applied was able to distinguish (to a certain extent) preferences of different groups (local, visitors from other areas in Japan, and foreign travelers).
 
 - My recommender system product of this project will include only the top 200 venues of each visitor source group (sum up to 442 venues) as an toy example that can be deployed on a small amazon instance. The framework can be extended when more data available, and he business features and A/B testing evaluation can be added.
 
