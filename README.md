@@ -26,7 +26,7 @@ Build a city attraction recommender system based on web-scraping data; Test is w
 
 ![cluster of venues](img/venue_clusters.png)
 
-**Figure 2: DCScan result: downtown area has highest density of venues and mixed categories, except for large theme park (e.g. Disneyland, Sea Park, and etc.) and mountain trails**
+**Figure 2: DBScan result: downtown area has highest density of venues and mixed categories, except for large theme park (e.g. Disneyland, Sea Park, and etc.) and mountain trails**
 
 
 4. A baseline model was built with features realted to popularity (how many vistis, percentage "liked", percentage checkins with photos and/or tips posted) of all venues.
