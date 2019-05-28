@@ -31,7 +31,7 @@ def mongo_instance(dbname, collection_name):
     collection = db[collection_name]
     return collection
 
-def cate(url='https://api.foursquare.com/v2/venues/categories?oauth_token=HTBFYEMHTKWABAGXBVG5ZYFZ05JOHMJKTTKTOV52A0BPKQN0&v=20161001'):
+def cate(url='https://api.foursquare.com/v2/venues/categories?oauth_token=test&v=20161001'):
     cateList = requests.get(url)
     mgcon = mongo_instance( 'citi', 'categories')
     mgcon.insert_one(json.loads(cateList.text))
