@@ -11,7 +11,7 @@ emr_bootstrap_script_path="{{ playbook_dir }}/files/emr_spark_tensorflow/bootstr
 localhost ansible_python_interpreter=python
 
 [emr-spark-tensorflow]
-35.165.22.180
+**.**.**.***
 
 [emr-spark-tensorflow:vars]
 ansible_connection=ssh
