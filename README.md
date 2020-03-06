@@ -1,6 +1,6 @@
 # TokyoGo 
 
-#### A Example Data Science project 
+#### A Sample Data Science project 
 
 #### Introduction & Data Source:
 The 2-week long capstone proejct was developed to fulfill the requirement of Galvanize data science immersive program. The object of this project was to explore city attractions in Tokyo and make recommendations for travellers, Data were obtained using [Foursquare](https://foursquare.com/) API and web srcaping tools (Selenium package with python). 
